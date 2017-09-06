@@ -1,0 +1,7 @@
+.do.cfg
+docker-compose.yml
+dc-service.yml
+.directory
+service/
+persistent/
+downloads/

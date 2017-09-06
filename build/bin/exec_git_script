@@ -1,0 +1,41 @@
+#!/bin/bash
+
+if [ "$2" = "" ] ; then
+  echo " usage: `basename $0`  <git-url> <script>"
+  echo ""
+  echo " example:"
+  echo "      `basename $0` https://user:pass@git.domain.de:900/user/mde.git env/reprepro.sh"
+  echo ""
+  exit 0
+fi
+
+PAR_GIT_URL="$1"
+PAR_SCRIPT="$2"
+
+WORKDIR=/workdir
+
+DIR=`basename $PAR_GIT_URL`
+DIR=${DIR%.git}
+
+mkdir -p $WORKDIR
+cd $WORKDIR
+if [ ! -d $DIR ] ; then
+  git clone ${PAR_GIT_URL} $DIR
+else
+  cd $DIR
+  git remote update
+  if  git diff --quiet remotes/origin/HEAD; then
+    echo "local repositroy <$DIR> is up to date"
+    exit 0
+  fi
+  git pull origin master
+fi
+cd $WORKDIR
+
+if [ ! -e $DIR/$PAR_SCRIPT ] ; then
+  echo "missing <$DIR/$PAR_SCRIPT> in git repository."
+  exit 1
+fi
+./$DIR/$PAR_SCRIPT $DIR
+
+exit 0

@@ -1,0 +1,44 @@
+version: '2'
+services:
+  aptrep:
+    ##################################################
+    # BUILD - section
+    ##################################################
+    #build:
+    #  context: ./build
+    #  dockerfile: Dockerfile
+    #  args:
+    #    BUILD_TZ: Europe/Berlin
+    ##################################################
+    # RUN / UP - section
+    ##################################################
+    image: unimock/aptrep:0.0.0
+    container_name: mde
+    restart: "unless-stopped"
+    hostname: myhost
+    domainname: mydomain.com
+    volumes:
+      - /service:/service                        # service volume for overwrites (ovm) and migration (mig)
+      - /persistent/debian-repros:/debian-repros # reprepro
+      - /downloads:/downloads                    # additional packages download 
+    environment:
+      # DISABLED_SERVICES=cron nginx 
+      - DISABLED_SERVICES=
+    ports:
+      - "80:80"      # nginx
+    #expose:
+    #  - "80"
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.backend=aptrep"
+    #  - "traefik.frontend.rule=Host:aptrep.mydomain.com"
+    #  - "traefik.port=80"
+    #  - "traefik.docker.network=traefik_default"
+    #networks:
+    #  - traefik_default
+
+#networks:
+#  traefik_default:
+#    external: true
+
+
